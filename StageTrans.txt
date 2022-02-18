@@ -1,0 +1,166 @@
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+public class StageTrans : MonoBehaviour
+{
+    //ステージ選択時移動先　Select - StageEnter1~3 - Stage
+    [SerializeField] GameObject target;
+
+    //ステージアイコンボタン StageSelectCanvas/Stage/Stage1~3
+    [SerializeField] GameObject target1;
+    [SerializeField] GameObject target2;
+    [SerializeField] GameObject target3;
+
+    //ステージ紹介オブジェクト StageSelectCanvas/Select/StageEnter1~3
+    [SerializeField] GameObject target1a;
+    [SerializeField] GameObject target2a;
+    [SerializeField] GameObject target3a;
+
+    //MoveTowards　移動スピード
+    [SerializeField] float speed;
+
+    bool set1 = false; //Stage1選択時true判定 
+    bool set1a = false;//Back押下時true判定 if(set1=true)
+
+    bool set2 = false; //Stage2選択時true判定
+    bool set2a = false;//Back押下時true判定 if(set2=true)
+
+    bool set3 = false; //Stage3選択時true判定
+    bool set3a = false;//Back押下時true判定 if(set3=true)
+
+    //スタート時ステージアイコン座標保持
+    Vector3 st1;
+    Vector3 st2;
+    Vector3 st3;
+
+    //ステージアイコンボタンアニメータ取得
+    private Animator anim1;
+    private Animator anim2;
+    private Animator anim3;
+
+    //ステージ紹介オブジェクトアニメータ取得
+    private Animator anim1a;
+    private Animator anim2a;
+    private Animator anim3a;
+
+
+    // Start is called before the first frame update
+    void Start()
+    {
+        st1 = target1.transform.position;
+        st2 = target2.transform.position;
+        st3 = target3.transform.position;
+
+
+
+
+        anim1 = target1.GetComponent<Animator>();
+        anim2 = target2.GetComponent<Animator>();
+        anim3 = target3.GetComponent<Animator>();
+
+        anim1a = target1a.GetComponent<Animator>();
+        anim2a = target2a.GetComponent<Animator>();
+        anim3a = target3a.GetComponent<Animator>();
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+
+        //ステージセレクト１～３ボタン選択時の移動MoveTowards仕様
+        if (set1)
+        {
+            target1.transform.position = Vector3.MoveTowards(target1.transform.position, target.transform.position, speed * Time.deltaTime);
+        }
+        if (set2)
+        {
+            target2.transform.position = Vector3.MoveTowards(target2.transform.position, target.transform.position, speed*2 * Time.deltaTime);
+        }
+        if (set3)
+        {
+            target3.transform.position = Vector3.MoveTowards(target3.transform.position, target.transform.position, speed*3 * Time.deltaTime);
+        }
+
+        //戻るボタン選択時の移動MoveTowards仕様
+        if (set1a)
+        {
+            set1 = false;
+            target1.transform.position = Vector3.MoveTowards(target1.transform.position, st1, speed * Time.deltaTime);
+        }
+        
+        if (set2a)
+        {
+            set2 = false;
+            target2.transform.position = Vector3.MoveTowards(target2.transform.position, st2, speed*2 * Time.deltaTime);
+        }
+        if (set3a)
+        {
+            set3 = false;
+            target3.transform.position = Vector3.MoveTowards(target3.transform.position, st3, speed*3 * Time.deltaTime);
+        }
+    }
+
+    //ステージ１移動
+    public void Stage1Move()
+    {
+        //transform.position = Vector3.MoveTowards(transform.position, target.transform.position, Time.deltaTime);
+        Reset();
+        set1 = true;
+    }
+
+    //ステージ２移動
+    public void Stage2Move()
+    {
+        //transform.position = Vector3.MoveTowards(transform.position, target.transform.position, Time.deltaTime);
+        Reset();
+        set2 = true;
+    }
+
+    //ステージ３移動
+    public void Stage3Move()
+    {
+        //transform.position = Vector3.MoveTowards(transform.position, target.transform.position, Time.deltaTime);
+        Reset();
+        set3 = true;
+    }
+
+    //Backボタン(ステージ紹介画面→ステージセレクト画面)
+    public void StageBack1()
+    {
+        //選択していたステージに応じて処理を選択
+        if (set1)
+        {
+            //ステージ２，３フェードイン
+            anim2.SetTrigger("SetIn");
+            anim3.SetTrigger("SetIn");
+            //ステージ１紹介画面　フェードアウト
+            anim1a.SetTrigger("Dont");
+            set1a = true;
+        }
+        if (set2)
+        {
+            anim1.SetTrigger("SetIn");
+            anim3.SetTrigger("SetIn");
+            //ステージ２紹介画面　フェードアウト
+            anim2a.SetTrigger("Dont");
+            set2a = true;
+        }
+        if (set3)
+        {
+            anim1.SetTrigger("SetIn");
+            anim2.SetTrigger("SetIn");
+            //ステージ３紹介画面　フェードアウト
+            anim3a.SetTrigger("Dont");
+            set3a = true;
+        }
+    }
+
+    //フラグリセット
+    void Reset()
+    {
+        set1a = false;
+        set2a = false;
+        set3a = false;
+    }
+}
